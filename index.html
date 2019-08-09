@@ -5,36 +5,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>开关灯</title>
+    <title>Document</title>
+    <script src="lib/jquery.min.js"></script>
+    <style>
+        .container {
+            width: 960px;
+            margin: 0 auto
+        }
 
+        .container ul {
+            list-style: none;
+            width: 100%;
+        }
+
+        .container ul li {
+            height: 180px;
+            width: 158px;
+            text-align: left;
+            float: left;
+            /* border: 1px solrgb(134, 40, 40)red; */
+            padding: 3px;
+        }
+
+        .container ul li img {
+            width: 100%;
+        }
+
+        .container ul li h3 {
+            margin-top: 0;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .container ul li p {
+            margin-top: 0;
+            color: #333;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .page {
+            position: fixed;
+            top: 50px;
+            left: 185px;
+
+        }
+
+        .active {
+            background-color: #63b700;
+            color: #fff;
+        }
+
+        .page span {
+            display: block;
+            width: 76px;
+            height: 30px;
+            border: 1px solid #ececec;
+            text-align: center;
+            margin-right: 10px;
+            line-height: 30px;
+            border-radius: 3px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container">
+        <ul>
+        </ul>
+    </div>
+    <div class="page">
 
-    <h1>
-        袁诗东，你真棒
-    </h1>
-    <h1>
-        袁诗东，你真棒
-    </h1>
-    <h1>
-        袁诗东，你真棒
-    </h1>
-    <h1>
-        袁诗东，你真棒
-    </h1>
+    </div>
 
-    <h1>
-        袁诗东，你真棒
-    </h1>
-    <h1>
-        袁诗东，你真棒
-    </h1>
-    <h1>
-        袁诗东，你真棒
-    </h1>
+    <script>
+        //发起请求
+        $(function () {
+            $.ajax({
+                    type: 'get',
+                    url: `http://cache.video.iqiyi.com/jp/avlist/202861101/1/`,
+                    dataType: "jsonp",
+                    jsonpCallback: "success",
+                    success: function (result) {
+                        let arr = result.data
+                        arr.vlist.forEach(item => {
+                            var $li = $('<li></li>')
+                            var $img = $('<img></img>').attr("src", item.vpic)
+                            var $h3 = $('<h3></h3>').text(item.shortTitle)
+                            var $p = $('<p></p>').text(item.vt)
+                            var $div = $('<div></div>').addClass("content");
+                            $div.append($h3, $p);
+                            $li.append($img, $div);
+                            $('ul').append($li);
+                            // console.log(item.vpic)
+                        });
+                    }
+                });
+            //分页
+            for (let i = 0; i < 12; i++) {
+                var $span = $('<span></span>').text(`第${i + 1}页`).attr("cid", i + 1)
+                $(".page").append($span)
+            }
+            $('span').first().addClass("active")
+            $('span').click(function () {
+                $('ul').empty();
+                $(this).addClass("active").siblings().removeClass('active');
+                var cid = $(this).attr("cid")
+                $.ajax({
+                    type: 'get',
+                    url: `http://cache.video.iqiyi.com/jp/avlist/202861101/${cid}/`,
+                    dataType: "jsonp",
+                    jsonpCallback: "success",
+                    success: function (result) {
+                        let arr = result.data
+                        arr.vlist.forEach(item => {
+                            var $li = $('<li></li>')
+                            var $img = $('<img></img>').attr("src", item.vpic)
+                            var $h3 = $('<h3></h3>').text(item.shortTitle)
+                            var $p = $('<p></p>').text(item.vt)
+                            var $div = $('<div></div>').addClass("content");
+                            $div.append($h3, $p);
+                            $li.append($img, $div);
+                            $('ul').append($li);
+                            // console.log(item.vpic)
+                        });
+                    }
+                });
+            })
+
+        })
 
 
+
+    </script>
 </body>
 
 </html>

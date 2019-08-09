@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/jquery.min.js"></script>
+    <style>
+        *{padding: 0;margin: 0;}
+        div{width: 500px;margin: 50px auto;}
+        input{width: 300px;height: 30px;outline: none;border: 0;border: 1px solid gray;}
+        ul,li{list-style: none;}
+        ul{width: 300px;border: 1px solid #ccc;;border-top: none;font-size: 14px;display: none;}
+        ul li{line-height: 25px;padding-left: 15px;}
+    </style>
+</head>
+<body>
+    <div>
+    <input type="text"> <button>搜索</button>
+    <ul>
+        <!-- <li>女装</li>
+        <li>女装</li>
+        <li>女装</li> -->
+    </ul>
+    </div>
+    <script>
+            /*
+                1.实现淘宝的搜索框
+                http://suggest.taobao.com/sug?code=utf-8&q=鞋子&callback=cb
+                2.实现：根据快递公司和单号 查询快递信息
+                http://www.kuaidi100.com/query?type=zhaijisong&postid=A001978312420
+
+                3.百度搜索
+                https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=java&code=utf-8&json=1&p=3&req=2&cb=fn
+            */            
+            $('input').on('input propertychange',function(){ 
+                if($(this).val().length>0){
+                    $('ul').show().empty();
+                }else{
+                    $('ul').hide();
+                }               
+                //发起请求
+                $.ajax({
+                    type:'get',
+                    url:`http://suggest.taobao.com/sug?code=utf-8&q=${$(this).val()}`,
+                    dataType:"jsonp",
+                    jsonpCallback:"success",
+                    success:function(data){
+                        // console.log(data);
+                        let arr=getData(data)
+                        // console.log(arr);
+                        arr.forEach(item=>{
+                            $('<li></li>')
+                            .text(item)
+                            .appendTo('ul');
+                        });
+                    }
+                });
+            });
+
+            //解析服务器返回的数据
+            function getData({result}){
+                // console.log(result);
+                let arr=[];
+                result.forEach(item=>{
+                    arr.push(item[0]);
+                });
+                return arr;
+            }
+        </script>
+</body>
+</html>

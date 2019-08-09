@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .container {
+            width: 800px;
+            text-align: center;
+            margin: 150px 300px;
+            text-align: left;
+        }
+        ul{
+            border: 1px solid #ccc;
+        }
+        li {
+            list-style: none;
+           margin-left: -40px;  
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1.实现淘宝的搜索框
+    http://suggest.taobao.com/sug?code=utf-8&q=鞋子&callback=cb -->
+    <div class="container">
+        <input type="text" placeholder="请输入搜索的内容" class="search">
+        <input type="button" value="点击搜索">
+        <ul></ul>
+    </div>
+    <script src="./lib/jquery.min.js"></script>
+    <script>
+        let search = $('.search')
+        $('.search').keyup(function () {
+            let JSOP = document.createElement('script');
+            JSOP.src = `http://suggest.taobao.com/sug?code=utf-8&q=${search.val()}&callback=cb`;
+            document.body.append(JSOP);
+        })
+        //函数
+        function cb(data) {
+            $('li').remove();
+            data.result.forEach(e => {
+                var oli = document.createElement('li');
+                oli.innerText = e[0]
+                var oul = document.querySelector('ul')
+                oul.appendChild(oli)
+            });
+        }
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
